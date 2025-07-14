@@ -25,8 +25,6 @@ def main():
         messege_len += b' ' * (HEADER - len(messege_len))
         conn.send(messege_len)
         conn.send(messege)
-    db.connect()
-    db.create_tables([Player])
     PORT = 5000
     SERVER = socket.gethostbyname(socket.gethostname())
     ADDR = (SERVER,PORT)

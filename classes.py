@@ -17,16 +17,6 @@ class Player(Model):
     lives = IntegerField()
     class Meta:
         database = db
-class PetBank(Model):
-    name = CharField()
-    power = IntegerField()
-    defence = IntegerField()
-    class Meta:
-        database = db
-class FoodBank(Model):
-    name = CharField()
-    class Meta:
-        database = db
 class Pet():
     def __init__(self,name,power,defence,trait=None,frozen=False):
         self.name = name
@@ -56,11 +46,9 @@ def obj2str(obj):
 def str2obj(pickled_str):
     return pickle.loads(base64.b64decode(pickled_str.encode('utf-8')))
 if __name__ == '__main__':
-    base = SqliteDatabase('base.db')
-    #history = SqliteDatabase('history.db')
-    #player = SqliteDatabase('player.db')
-    base.connect()
-    base.create_tables([Player,PetBank,FoodBank])
+    history = SqliteDatabase('history.db')
+    history.connect()
+    history.create_tables([Player])
     #T1 pets
     PetBank.create(name="Cricket",power=1,defence=3)
     PetBank.create(name="Pig",power=4,defence=1)
@@ -104,7 +92,7 @@ if __name__ == '__main__':
     FoodBank.create(name="Pear")
     FoodBank.create(name="Chili")
     #T5 foods
-    FoodBank.create(name="chocolate")
+    FoodBank.create(name="Chocolate")
     FoodBank.create(name="Sushi")
     #T6 foods
     FoodBank.create(name="Steak")

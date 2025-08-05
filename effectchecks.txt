@@ -1,8 +1,0 @@
-onsell
-onfaint
-onbattlestart
-onturnend
-onbought
-onhurt
-beforeaatack
-onattack

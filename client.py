@@ -13,59 +13,6 @@ def main():
     HEADER = 64
     DISCONNECT = '!disc!!'
     client = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-    PETS = [
-    #T1 pets
-    Pet(name="Cricket",power=1,defence=3),
-    Pet(name="Pig",power=4,defence=1),
-    Pet(name="Duck",power=2,defence=3),
-    Pet(name="Beaver",power=3,defence=2),
-    #T2 pets
-    Pet(name="Crab",power=4,defence=1),
-    Pet(name="Peacock",power=2,defence=5),
-    Pet(name="Flamingo",power=3,defence=2),
-    Pet(name="Spider",power=2,defence=2),
-    #T3 pets
-    Pet(name="Sheep",power=2,defence=2),
-    Pet(name="Dodo",power=3,defence=2),
-    Pet(name="Ox",power=1,defence=3),
-    Pet(name="Camel",power=3,defence=4),
-    #T4 pets
-    Pet(name="Turtle",power=2,defence=5),
-    Pet(name="Deer",power=4,defence=2),
-    Pet(name="Parrot",power=4,defence=2),
-    Pet(name="Skunk",power=3,defence=5),
-    #T5 pets
-    Pet(name="Armadillo",power=2,defence=10),
-    Pet(name="Rooster",power=6,defence=4),
-    Pet(name="Shark",power=2,defence=2),
-    Pet(name="Scorpion",power=1,defence=1),
-    #T6 pets
-    Pet(name="Mammoth",power=4,defence=12),
-    Pet(name="Dragon",power=3,defence=8),
-    Pet(name="Boar",power=10,defence=6),
-    Pet(name="Snake",power=8,defence=3)
-    ]
-    #T1 foods
-    FOODS = [
-    Food(name="Honey"),
-    Food(name="Apple"),
-    #T2 foods
-    Food(name="Sleeping Pill"),
-    Food(name="Meat Bone"),
-    #T3 foods
-    Food(name="Garlic"),
-    Food(name="Salad"),
-    #T4 foods
-    Food(name="Pear"),
-    Food(name="Chili"),
-    #T5 foods
-    Food(name="Chocolate"),
-    Food(name="Sushi"),
-    #T6 foods
-    Food(name="Steak"),
-    Food(name="Melon"),
-    Food(name="Pizza")
-    ]
     def sendMessege(msg):
         messege = msg.encode(FORMAT)
         messege_len = len(messege)
@@ -228,7 +175,7 @@ def main():
         font = pygame.font.SysFont('Arial', 36)
         bigfont = pygame.font.SysFont('Arial', 72)
         COIN_COUNT = bigfont.render(f'{player.coins}', False, (0, 0, 0))
-   
+        outcome = None
         inp = [None,None]
         while running:
             for event in pygame.event.get():
@@ -241,11 +188,11 @@ def main():
                 player.coins = 10
                 for i in range(4):
                     if player.shop[i] == None:
-                        temp = random.choice(PETS)
+                        temp = getpet(player.day)
                         player.shop[i] = Pet(name=temp.name,power=temp.power,defence= temp.defence)
                 for i in range(4,6):
                     if player.shop[i] == None:
-                        temp = random.choice(FOODS)
+                        temp = getfood(player.day)
                         player.shop[i] = Food(name=temp.name)
                 gamephase = 'shop'
             elif gamephase == 'shop':
@@ -322,10 +269,10 @@ def main():
                     elif keys[pygame.K_r]:
                         if not held and player.coins > 0:
                             for i in range(4):
-                                temp = random.choice(PETS)
+                                temp = getpet(player.day)
                                 player.shop[i] = Pet(name=temp.name,power=temp.power,defence= temp.defence)
                             for i in range(4,6):
-                                temp = random.choice(FOODS)
+                                temp = getfood(player.day)
                                 player.shop[i] = Food(name = temp.name)
                             player.coins -= 1
                         held = True
@@ -346,39 +293,39 @@ def main():
                     elif inp[0] < 9 and player.coins > 2:
                         if player.warband[inp[1]] == None:
                             player.warband[inp[1]] = player.shop[inp[0]-5]
-                            temp = random.choice(PETS)
+                            temp = getpet(player.day)
                             player.shop[inp[0]-5] = Pet(name=temp.name,power=temp.power,defence= temp.defence)
                             player.coins -=3
                         elif player.warband[inp[1]].name == player.shop[inp[0]-5].name:
                             player.warband[inp[1]].addXp()
-                            temp = random.choice(PETS)
+                            temp = getpet(player.day)
                             player.shop[inp[0]-5] = Pet(name=temp.name,power=temp.power,defence= temp.defence)
                             player.coins -=3
                     elif player.warband[inp[1]] != None:
                         if player.shop[inp[0]-5].name =="Honey" and player.coins > 2:
                             player.warband[inp[1]].trait = 'Honey'
-                            temp = random.choice(FOODS)
+                            temp = getfood(player.day)
                             player.shop[inp[0]-5] = Food(name = temp.name)
                             player.coins -=3
                         elif player.shop[inp[0]-5].name == "Apple" and player.coins > 2:
                             player.warband[inp[1]].power += 1
                             player.warband[inp[1]].defence += 1
-                            temp = random.choice(FOODS)
+                            temp = getfood(player.day)
                             player.shop[inp[0]-5] = Food(name = temp.name)
                             player.coins -=3
                         elif player.shop[inp[0]-5].name == "Sleeping Pill" and player.coins > 0:
-                            #TODO
-                            temp = random.choice(FOODS)
+                            player.warband = player.warband[inp[1]].die(selfnum = inp[1],warband = player.warband)
+                            temp = getfood(player.day)
                             player.shop[inp[0]-5] = Food(name = temp.name)
                             player.coins -=1
                         elif player.shop[inp[0]-5].name == "Meat Bone" and player.coins > 2:
                             player.warband[inp[1]].trait = 'Meat Bone'
-                            temp = random.choice(FOODS)
+                            temp = getfood(player.day)
                             player.shop[inp[0]-5] = Food(name = temp.name)
                             player.coins -=3
                         elif player.shop[inp[0]-5].name == "Garlic" and player.coins > 2:
                             player.warband[inp[1]].trait = 'Garlic'
-                            temp = random.choice(FOODS)
+                            temp = getfood(player.day)
                             player.shop[inp[0]-5] = Food(name = temp.name)
                             player.coins -=3
                         elif player.shop[inp[0]-5].name == "Salad" and player.coins > 2:
@@ -388,23 +335,23 @@ def main():
                                     j = random.choice(temp)
                                     player.warband[j].power += 1
                                     player.warband[j].defence += 1
-                                temp = random.choice(FOODS)
+                                temp = getfood(player.day)
                                 player.shop[inp[0]-5] = Food(name = temp.name)
                                 player.coins -=3
                         elif player.shop[inp[0]-5].name == "Pear" and player.coins > 2:
                             player.warband[inp[1]].power += 2
                             player.warband[inp[1]].defence += 2
-                            temp = random.choice(FOODS)
+                            temp = getfood(player.day)
                             player.shop[inp[0]-5] = Food(name = temp.name)
                             player.coins -=3
                         elif player.shop[inp[0]-5].name == "Chili" and player.coins > 2:
                             player.warband[inp[1]].trait = 'Chili'
-                            temp = random.choice(FOODS)
+                            temp = getfood(player.day)
                             player.shop[inp[0]-5] = Food(name = temp.name)
                             player.coins -=3
                         elif player.shop[inp[0]-5].name == "Chocolate" and player.coins > 2:
                             player.warband[inp[1]].addXp()
-                            temp = random.choice(FOODS)
+                            temp = getfood(player.day)
                             player.shop[inp[0]-5] = Food(name = temp.name)
                             player.coins -=3
                         elif player.shop[inp[0]-5].name == "Sushi" and player.coins > 2:
@@ -414,17 +361,17 @@ def main():
                                         j = random.choice(temp)
                                         player.warband[j].power += 1
                                         player.warband[j].defence += 1
-                                temp = random.choice(FOODS)
+                                temp = getfood(player.day)
                                 player.shop[inp[0]-5] = Food(name = temp.name)
                                 player.coins -=3
                         elif player.shop[inp[0]-5].name == "Steak" and player.coins > 2:
                             player.warband[inp[1]].trait = 'Steak'
-                            temp = random.choice(FOODS)
+                            temp = getfood(player.day)
                             player.shop[inp[0]-5] = Food(name = temp.name)
                             player.coins -=3
                         elif player.shop[inp[0]-5].name == "Melon" and player.coins > 2:
                             player.warband[inp[1]].trait = 'Melon'
-                            temp = random.choice(FOODS)
+                            temp = getfood(player.day)
                             player.shop[inp[0]-5] = Food(name = temp.name)
                             player.coins -=3
                         elif player.shop[inp[0]-5].name == "Pizza" and player.coins > 2:
@@ -434,7 +381,7 @@ def main():
                                     j = random.choice(temp)
                                     player.warband[j].power += 2
                                     player.warband[j].defence += 2
-                                temp = random.choice(FOODS)
+                                temp = getfood(player.day)
                                 player.shop[inp[0]-5] = Food(name = temp.name)
                                 player.coins -=3
                     held = False
@@ -452,7 +399,41 @@ def main():
                     playercopy = Player(warband = player.warband,shop = player.shop,day = player.day,coins = player.coins,lives = player.lives)
                 doiattack = random.choice([True,False])
                 while True:
-                    ...
+                    while True:
+                        if keys[pygame.K_SPACE]:
+                            break
+                    if doiattack:
+                        attacker = None
+                        for i in range(5):
+                            if playercopy.warband[i] != None:
+                                attacker = playercopy.warband[i]
+                                break
+                        if attacker != None:
+                            attacker.attack(i,playercopy.warband,enemy.warband)
+                            for i in range(5):
+                                if playercopy.warband[i].defence <1:
+                                    playercopy.warband[i].die(i,playercopy.warband)
+                                if enemy.warband[i].defence <1:
+                                    enemy.warband[i].die(i,enemy.warband)
+                    dead = 0
+                    enemydead = 0
+                    for i in range(5):
+                        if playercopy.warband[i] == None:
+                            dead +=1
+                        if enemy.warband[i] == None:
+                            enemydead +=1
+                    if enemydead == 5:
+                        player.wins += 1
+                        break
+                    elif dead == 5:
+                        player.lives -= 1
+                        break
+                if player.wins >= 10:
+                    outcome = 'win'
+                    running = False
+                elif player.lives <= 0:
+                    outcome = 'loss'
+                    running = False
             screen.blit(wallpaper, (0, 0))
             screen.blit(COIN, (1500, 0))
             screen.blit(bigfont.render(f'{player.coins}', False, (0, 0, 0)), (1400, 0))
@@ -462,16 +443,16 @@ def main():
                 if player.warband[i] != None:
                     temp = player.warband[i]
                     if temp != None:
-                        screen.blit(findanimaltoshow(temp.name),(75*i,600))
-                        screen.blit(font.render(f'{i+1}', False, (0, 0, 0)),(40 + (75*i),560))
-                        screen.blit(smallfont.render(f'ATK {temp.power}', False, (255, 255, 255)),((75*i),710))
-                        screen.blit(smallfont.render(f'DEF {temp.defence}', False, (255, 255, 255)),((75*i),740))
-                        screen.blit(smallfont.render(f'LVL {temp.level}', False, (255, 255, 255)),((75*i),770))
-                        screen.blit(smallfont.render(f'EXP {temp.xp}', False, (255, 255, 255)),((75*i),800))
+                        screen.blit(findanimaltoshow(temp.name),(300-(75*i),600))
+                        screen.blit(font.render(f'{i+1}', False, (0, 0, 0)),(340 - (75*i),560))
+                        screen.blit(smallfont.render(f'ATK {temp.power}', False, (255, 255, 255)),(300 - (75*i),710))
+                        screen.blit(smallfont.render(f'DEF {temp.defence}', False, (255, 255, 255)),(300 - (75*i),740))
+                        screen.blit(smallfont.render(f'LVL {temp.level}', False, (255, 255, 255)),(300 - (75*i),770))
+                        screen.blit(smallfont.render(f'EXP {temp.xp}', False, (255, 255, 255)),(300 - (75*i),800))
                         trait = 'N/A'if temp.trait == None else ''
-                        screen.blit(smallfont.render(f'T {trait}', False, (255, 255, 255)),((75*i),830))
+                        screen.blit(smallfont.render(f'T {trait}', False, (255, 255, 255)),(300 - (75*i),830))
                         if trait == '':
-                            screen.blit(pygame.transform.scale(findfoodtoshow(temp.trait), (40, 40)),(20 + (75*i),830))
+                            screen.blit(pygame.transform.scale(findfoodtoshow(temp.trait), (40, 40)),(320 - (75*i),830))
             if gamephase == 'shop':
                 screen.blit(REROLL, (900, 750))
                 screen.blit(font.render('R', False, (255, 255, 255)),(930,850))
@@ -495,6 +476,20 @@ def main():
                             screen.blit(temp,(1600-(100*(i+1)),750))
                             screen.blit(font.render(findkeytoshow(i), False, (255, 255, 255)),(1630-(100*(i+1)),850))
             pygame.display.flip()
+            overscreenrunning = True
+            while overscreenrunning:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        overscreenrunning = False
+                keys = pygame.key.get_pressed()
+                if keys[pygame.K_RETURN] or keys[pygame.K_SPACE]:
+                    overscreenrunning = False
+                screen.fill ((0,0,0))
+            if outcome == 'win':
+                screen.blit(bigfont.render('Victory !', False, (255, 255, 255)),(600,300))
+            else:
+                screen.blit(bigfont.render('Game Over !', False, (255, 255, 255)),(600,300))
+                pygame.display.flip()
         pygame.quit()
     def playArena():
         player = Player(warband = [None,None,None,None,None],shop = [None,None,None,None,None,None],day = 1,coins = 0,lives = 4)
@@ -550,14 +545,5 @@ def main():
     vsconnectbutton = tk.Button(loginWindow,text="connect to VS mode lobby",command=connectVSB)
     vsconnectbutton.pack()
     loginWindow.mainloop()
-    # pygame.init()
-    # screen = pygame.display.set_mode([500, 500])
-    # while True:
-    #     for event in pygame.event.get():
-    #         if event.type == pygame.QUIT:
-    #             return  
-    #     screen.fill((255, 255, 255))
-    #     pygame.draw.circle(screen, (0, 0, 255), (250, 250), 75)
-    #     pygame.display.flip()
 if __name__ == '__main__':
     main()

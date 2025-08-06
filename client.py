@@ -177,6 +177,7 @@ def main():
         COIN_COUNT = bigfont.render(f'{player.coins}', False, (0, 0, 0))
         outcome = None
         inp = [None,None]
+        enemy = None
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -475,24 +476,39 @@ def main():
                         if temp != None:
                             screen.blit(temp,(1600-(100*(i+1)),750))
                             screen.blit(font.render(findkeytoshow(i), False, (255, 255, 255)),(1630-(100*(i+1)),850))
+            elif gamephase == 'battle' and enemy != None:
+                for i in range(5):
+                    if enemy.warband[i] != None:
+                        temp = enemy.warband[i]
+                        if temp != None:
+                            screen.blit(findanimaltoshow(temp.name),(1600-(300-(75*i)),600))
+                            screen.blit(font.render(f'{i+1}', False, (0, 0, 0)),(1600-(340 - (75*i)),560))
+                            screen.blit(smallfont.render(f'ATK {temp.power}', False, (255, 255, 255)),(1600-(300 - (75*i)),710))
+                            screen.blit(smallfont.render(f'DEF {temp.defence}', False, (255, 255, 255)),(1600-(300 - (75*i)),740))
+                            screen.blit(smallfont.render(f'LVL {temp.level}', False, (255, 255, 255)),(1600-(300 - (75*i)),770))
+                            screen.blit(smallfont.render(f'EXP {temp.xp}', False, (255, 255, 255)),(1600-(300 - (75*i)),800))
+                            trait = 'N/A'if temp.trait == None else ''
+                            screen.blit(smallfont.render(f'T {trait}', False, (255, 255, 255)),(1600-(300 - (75*i)),830))
+                            if trait == '':
+                                screen.blit(pygame.transform.scale(findfoodtoshow(temp.trait), (40, 40)),(1600-(320 - (75*i)),830))
             pygame.display.flip()
-            overscreenrunning = True
-            while overscreenrunning:
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        overscreenrunning = False
-                keys = pygame.key.get_pressed()
-                if keys[pygame.K_RETURN] or keys[pygame.K_SPACE]:
+        overscreenrunning = True
+        while overscreenrunning:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
                     overscreenrunning = False
-                screen.fill ((0,0,0))
-            if outcome == 'win':
-                screen.blit(bigfont.render('Victory !', False, (255, 255, 255)),(600,300))
-            else:
-                screen.blit(bigfont.render('Game Over !', False, (255, 255, 255)),(600,300))
-                pygame.display.flip()
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_RETURN] or keys[pygame.K_SPACE]:
+                overscreenrunning = False
+            screen.fill ((0,0,0))
+        if outcome == 'win':
+            screen.blit(bigfont.render('Victory !', False, (255, 255, 255)),(600,300))
+        else:
+            screen.blit(bigfont.render('Game Over !', False, (255, 255, 255)),(600,300))
+            pygame.display.flip()
         pygame.quit()
     def playArena():
-        player = Player(warband = [None,None,None,None,None],shop = [None,None,None,None,None,None],day = 1,coins = 0,lives = 4)
+        player = Player(warband = [None,None,None,None,None],shop = [None,None,None,None,None,None],day = 1,coins = 0,lives = 4,wins = 0)
         loginWindow.destroy()
         playpygame("arena",player)
     def newVSB():
@@ -501,7 +517,7 @@ def main():
             signupattempt = sendMessege(f'newlobby¶{newuuid}')
             if signupattempt != '¶':
                 loginWindow.destroy()
-                player = Player(warband = [None,None,None,None,None],shop = [None,None,None,None,None,None],day = 1,coins = 0,lives = 4)
+                player = Player(warband = [None,None,None,None,None],shop = [None,None,None,None,None,None],day = 1,coins = 0,lives = 4,wins = 0)
                 player.ready = False
                 playpygame("vs",player)
             else :
@@ -523,7 +539,7 @@ def main():
             signupattempt = sendMessege(f'connectlobby¶{uuidinput.get()}')
             if signupattempt != '¶':
                 loginWindow.destroy()
-                player = Player(warband = [None,None,None,None,None],shop = [None,None,None,None,None,None],day = 1,coins = 10,lives = 4)
+                player = Player(warband = [None,None,None,None,None],shop = [None,None,None,None,None,None],day = 1,coins = 10,lives = 4,wins = 0)
                 player.ready = False
                 playpygame("vs",player)
             else :

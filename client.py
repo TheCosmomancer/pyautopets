@@ -5,6 +5,7 @@ import tkinter as tk
 from classes import *
 import uuid
 import random
+import time
 def main():
     PORT = 5000
     FORMAT = 'utf-8'
@@ -53,7 +54,25 @@ def main():
         Dragon = pygame.image.load("./assets/Dragon.png")
         Boar = pygame.image.load("./assets/Boar.png")
         Snake = pygame.image.load("./assets/Snake.png")
-        if name == 'Cricket':
+        Bus = pygame.image.load("./assets/Bus.png")
+        Chicken = pygame.image.load("./assets/Chicken.png")
+        Bee = pygame.image.load("./assets/Bee.png")
+        Sheeplet = pygame.image.load("./assets/Sheeplet.png")
+        Cricklet = pygame.image.load("./assets/Cricklet.png")
+        Giraffe = pygame.image.load("./assets/Giraffe.png")
+        if name == 'Giraffe':
+            return Giraffe
+        elif name == 'Cricklet':
+            return Cricklet
+        elif name == 'Sheeplet':
+            return Sheeplet
+        elif name == 'Bee':
+            return Bee
+        elif name == 'Chicken':
+            return Chicken
+        elif name == 'Bus':
+            return Bus
+        elif name == 'Cricket':
             return Cricket
         elif name == 'Pig':
             return Pig
@@ -167,6 +186,8 @@ def main():
         gamephase = 'newday'
         wallpaper = pygame.transform.scale(pygame.image.load("./assets/wallhaven-jxrrmp_3840x2160.png"), (1600, 900))
         COIN = pygame.transform.scale(pygame.image.load("./assets/coin.svg"), (100, 100))
+        LIVES = pygame.transform.scale(pygame.image.load("./assets/Lives.png"), (100, 100))
+        WINS = pygame.transform.scale(pygame.image.load("./assets/Wins.png"), (100, 100))
         NEXT = pygame.transform.scale(pygame.image.load("./assets/next.svg"), (100, 100))
         REROLL = pygame.transform.scale(pygame.image.load("./assets/reroll.svg"), (100, 100))
         SELL = pygame.transform.scale(pygame.image.load("./assets/sell.svg"), (70, 70.))
@@ -195,6 +216,19 @@ def main():
                     if player.shop[i] == None:
                         temp = getfood(player.day)
                         player.shop[i] = Food(name=temp.name)
+                for i in range(5):
+                    if player.warband[i] != None:
+                        if player.warband[i].name == 'Giraffe':
+                            tostatup = []
+                            for h in range(i-1,-1,-1):
+                                if player.warband[h] != None:
+                                    tostatup.append(h)
+                                if len(tostatup) >= player.warband[i].level:
+                                    break
+                            if tostatup != []:
+                                for _ in tostatup:
+                                    player.warband[_].power += 1
+                                    player.warband[_].defecne += 1
                 gamephase = 'shop'
             elif gamephase == 'shop':
                 if inp[1] == None:
@@ -278,13 +312,24 @@ def main():
                             player.coins -= 1
                         held = True
                     elif keys[pygame.K_RETURN] or keys[pygame.K_KP_ENTER] or keys[pygame.K_SPACE]:
-                        gamephase = 'battle'
+                        gamephase = 'battleprep'
                     else:
                         held = False
                 else:
                     if inp[1] == 11:
                         if inp[0] < 5:
                             player.coins += 1 if player.warband[inp[0]].name != 'Pig' else 1 + player.warband[inp[0]].level
+                            if player.warband[inp[0]].name == 'Duck':
+                                for h in range(4):
+                                    player.shop[h].defence += player.warband[inp[0]].level
+                            elif player.warband[inp[0]] == 'Beaver':
+                                tostatup = []
+                                for h in range(5):
+                                    if player.warband[h] != None and h != inp[0]:
+                                        tostatup.append(h)
+                                if tostatup != []:
+                                    for _ in range(2):
+                                        player.warband[random.choice(tostatup)].power += player.warband[inp[0]].level
                             player.warband[inp[0]] = None
                         elif inp[0]<11:
                             player.shop[inp[0]-5].frozen = not player.shop[inp[0]-5].frozen
@@ -387,124 +432,156 @@ def main():
                                 player.coins -=3
                     held = False
                     inp[0] , inp[1] = (None,None)
-            elif gamephase == 'battle':
+            elif gamephase == 'battleprep':
                 if mode == 'arena':
-                    Player.create(warband = obj2str(player.warband),shop = obj2str(player.shop),day = player.day,coins = player.coins,lives = player.lives)
-                    playercopy = Player(warband = player.warband,shop = player.shop,day = player.day,coins = player.coins,lives = player.lives)
+                    playercopy = Player(warband = player.warband,shop = player.shop,day = player.day,coins = player.coins,lives = player.lives,wins = player.wins)
                     enemy = random.choice(list(Player.select().where(Player.day == playercopy.day)))
                     enemy.warband = str2obj(enemy.warband)
                 else:
                     sendMessege(f'saveplayer¶{obj2str(player)}')
                     sendMessege('getenemy')
                     enemy = str2obj(reciveMessege())
-                    playercopy = Player(warband = player.warband,shop = player.shop,day = player.day,coins = player.coins,lives = player.lives)
+                    playercopy = Player(warband = player.warband,shop = player.shop,day = player.day,coins = player.coins,lives = player.lives,wins = player.wins)
+                Player.create(warband = obj2str(player.warband),shop = obj2str(player.shop),day = player.day,coins = player.coins,lives = player.lives,wins = player.wins)
                 doiattack = random.choice([True,False])
-                while True:
-                    while True:
-                        if keys[pygame.K_SPACE]:
+                gamephase = 'battle'
+                for i in range(5):
+                    if playercopy.warband[i] != None:
+                        if playercopy.warband[i].name == 'Crab':
+                            try:
+                                mosthealth = max(playercopy.warband[x].defence for x in range(5) if (x != i and playercopy.warband[x] != None))
+                                playercopy.warband[i].defence += mosthealth *(playercopy.warband[i].level/2)
+                            except:
+                                pass
+                        elif playercopy.warband[i].name == 'Dodo':
+                            for j in range(i-1,-1,-1):
+                                if playercopy.warband[j] != None:
+                                    playercopy.warband[j].power += playercopy.warband[i].power *(playercopy.warband[i].level/2)
+                                    break
+                        elif playercopy.warband[i].name == 'Parrot':
+                            for j in range(i-1,-1,-1):
+                                if playercopy.warband[j] != None:
+                                    playercopy.warband[i].name += playercopy.warband[j].name
+                                    break
+            elif gamephase == 'battle':
+                if doiattack:
+                    attacker = None
+                    for i in range(5):
+                        if playercopy.warband[i] != None:
+                            attacker = playercopy.warband[i]
                             break
-                    if doiattack:
-                        attacker = None
+                    if attacker != None:
+                        attacker.attack(i,playercopy.warband,enemy.warband)
                         for i in range(5):
                             if playercopy.warband[i] != None:
-                                attacker = playercopy.warband[i]
-                                break
-                        if attacker != None:
-                            attacker.attack(i,playercopy.warband,enemy.warband)
-                            for i in range(5):
                                 if playercopy.warband[i].defence <1:
                                     playercopy.warband[i].die(i,playercopy.warband)
+                            if enemy.warband[i] != None:
                                 if enemy.warband[i].defence <1:
                                     enemy.warband[i].die(i,enemy.warband)
-                    dead = 0
-                    enemydead = 0
+                    doiattack = not doiattack
+                else:
+                    attacker = None
                     for i in range(5):
-                        if playercopy.warband[i] == None:
-                            dead +=1
-                        if enemy.warband[i] == None:
-                            enemydead +=1
-                    if enemydead == 5:
-                        player.wins += 1
-                        break
-                    elif dead == 5:
-                        player.lives -= 1
-                        break
-                if player.wins >= 10:
-                    outcome = 'win'
-                    running = False
-                elif player.lives <= 0:
-                    outcome = 'loss'
-                    running = False
-            screen.blit(wallpaper, (0, 0))
-            screen.blit(COIN, (1500, 0))
-            screen.blit(bigfont.render(f'{player.coins}', False, (0, 0, 0)), (1400, 0))
-            screen.blit(NEXT, (1450, 450))
-            screen.blit(font.render('Space/Enter', False, (255, 255, 255)),(1400,550))
-            for i in range(5):
-                if player.warband[i] != None:
-                    temp = player.warband[i]
-                    if temp != None:
-                        screen.blit(findanimaltoshow(temp.name),(300-(75*i),600))
-                        screen.blit(font.render(f'{i+1}', False, (0, 0, 0)),(340 - (75*i),560))
-                        screen.blit(smallfont.render(f'ATK {temp.power}', False, (255, 255, 255)),(300 - (75*i),710))
-                        screen.blit(smallfont.render(f'DEF {temp.defence}', False, (255, 255, 255)),(300 - (75*i),740))
-                        screen.blit(smallfont.render(f'LVL {temp.level}', False, (255, 255, 255)),(300 - (75*i),770))
-                        screen.blit(smallfont.render(f'EXP {temp.xp}', False, (255, 255, 255)),(300 - (75*i),800))
-                        trait = 'N/A'if temp.trait == None else ''
-                        screen.blit(smallfont.render(f'T {trait}', False, (255, 255, 255)),(300 - (75*i),830))
-                        if trait == '':
-                            screen.blit(pygame.transform.scale(findfoodtoshow(temp.trait), (40, 40)),(320 - (75*i),830))
-            if gamephase == 'shop':
-                screen.blit(REROLL, (900, 750))
-                screen.blit(font.render('R', False, (255, 255, 255)),(930,850))
-                screen.blit(SELL, (750, 780))
-                screen.blit(FREEZE, (830, 780))
-                screen.blit(font.render('F', False, (255, 255, 255)),(810,850))
-                for i in range(4):
-                    if player.shop[i] != None:
-                        temp = findanimaltoshow(player.shop[i].name)
-                        if player.shop[i].frozen:
-                            pygame.draw.rect(screen, (4, 134, 177), pygame.Rect(1600-(100*(i+1)),750, 100, 100))
-                        if temp != None:
-                            screen.blit(temp,(1600-(100*(i+1)),750))
-                            screen.blit(font.render(findkeytoshow(i), False, (255, 255, 255)),(1630-(100*(i+1)),850))
-                for i in range(4,6):
-                    if player.shop[i] != None:
-                        temp = findfoodtoshow(player.shop[i].name)
-                        if player.shop[i].frozen:
-                            pygame.draw.rect(screen, (4, 134, 177), pygame.Rect(1600-(100*(i+1)),750, 100, 100))
-                        if temp != None:
-                            screen.blit(temp,(1600-(100*(i+1)),750))
-                            screen.blit(font.render(findkeytoshow(i), False, (255, 255, 255)),(1630-(100*(i+1)),850))
-            elif gamephase == 'battle' and enemy != None:
+                        if enemy.warband[i] != None:
+                            attacker = enemy.warband[i]
+                            break
+                    if attacker != None:
+                        attacker.attack(i,enemy.warband,playercopy.warband)
+                        for i in range(5):
+                            if playercopy.warband[i] != None:
+                                if playercopy.warband[i].defence <1:
+                                    playercopy.warband[i].die(i,playercopy.warband)
+                            if enemy.warband[i] != None:
+                                if enemy.warband[i].defence <1:
+                                    enemy.warband[i].die(i,enemy.warband)
+                    doiattack = not doiattack
+                dead = 0
+                enemydead = 0
                 for i in range(5):
-                    if enemy.warband[i] != None:
-                        temp = enemy.warband[i]
-                        if temp != None:
-                            screen.blit(findanimaltoshow(temp.name),(1600-(300-(75*i)),600))
-                            screen.blit(font.render(f'{i+1}', False, (0, 0, 0)),(1600-(340 - (75*i)),560))
-                            screen.blit(smallfont.render(f'ATK {temp.power}', False, (255, 255, 255)),(1600-(300 - (75*i)),710))
-                            screen.blit(smallfont.render(f'DEF {temp.defence}', False, (255, 255, 255)),(1600-(300 - (75*i)),740))
-                            screen.blit(smallfont.render(f'LVL {temp.level}', False, (255, 255, 255)),(1600-(300 - (75*i)),770))
-                            screen.blit(smallfont.render(f'EXP {temp.xp}', False, (255, 255, 255)),(1600-(300 - (75*i)),800))
-                            trait = 'N/A'if temp.trait == None else ''
-                            screen.blit(smallfont.render(f'T {trait}', False, (255, 255, 255)),(1600-(300 - (75*i)),830))
-                            if trait == '':
-                                screen.blit(pygame.transform.scale(findfoodtoshow(temp.trait), (40, 40)),(1600-(320 - (75*i)),830))
-            pygame.display.flip()
-        overscreenrunning = True
-        while overscreenrunning:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    overscreenrunning = False
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_RETURN] or keys[pygame.K_SPACE]:
-                overscreenrunning = False
+                    if playercopy.warband[i] == None:
+                        dead +=1
+                    if enemy.warband[i] == None:
+                        enemydead +=1
+                if enemydead == 5:
+                    player.wins += 1
+                    gamephase = 'newday'
+                elif dead == 5:
+                    player.lives -= 1
+                    gamephase = 'newday'
+                if player.wins >= 10:
+                    gamephase = 'win'
+                elif player.lives <= 0:
+                    gamephase = 'loss'
+                time.sleep(1)
+            elif gamephase == 'win' or gamephase == 'loss':
+                ...    
             screen.fill ((0,0,0))
-        if outcome == 'win':
-            screen.blit(bigfont.render('Victory !', False, (255, 255, 255)),(600,300))
-        else:
-            screen.blit(bigfont.render('Game Over !', False, (255, 255, 255)),(600,300))
+            if gamephase == 'win':
+                screen.blit(bigfont.render('Victory !', False, (255, 255, 255)),(600,300))
+            elif gamephase == 'loss':
+                screen.blit(bigfont.render('Game Over !', False, (255, 255, 255)),(600,300))
+            else:
+                screen.blit(wallpaper, (0, 0))
+                screen.blit(COIN, (1450, 50))
+                screen.blit(bigfont.render(f'{player.coins}', False, (0, 0, 0)), (1350, 50))
+                screen.blit(LIVES, (50, 50))
+                screen.blit(bigfont.render(f'{player.lives}', False, (0, 0, 0)), (150, 50))
+                screen.blit(WINS, (50, 200))
+                screen.blit(bigfont.render(f'{player.wins}', False, (0, 0, 0)), (150, 200))
+                screen.blit(NEXT, (1450, 450))
+                screen.blit(font.render('Space/Enter', False, (255, 255, 255)),(1400,550))
+                for i in range(5):
+                    if player.warband[i] != None:
+                        temp = player.warband[i]
+                        if temp != None:
+                            screen.blit(findanimaltoshow(temp.name),(300-(75*i),600))
+                            screen.blit(font.render(f'{i+1}', False, (0, 0, 0)),(340 - (75*i),560))
+                            screen.blit(smallfont.render(f'ATK {temp.power}', False, (255, 255, 255)),(300 - (75*i),710))
+                            screen.blit(smallfont.render(f'DEF {temp.defence}', False, (255, 255, 255)),(300 - (75*i),740))
+                            screen.blit(smallfont.render(f'LVL {temp.level}', False, (255, 255, 255)),(300 - (75*i),770))
+                            screen.blit(smallfont.render(f'EXP {temp.xp}', False, (255, 255, 255)),(300 - (75*i),800))
+                            trait = 'N/A'if temp.trait == None else ''
+                            screen.blit(smallfont.render(f'T {trait}', False, (255, 255, 255)),(300 - (75*i),830))
+                            if trait == '':
+                                screen.blit(pygame.transform.scale(findfoodtoshow(temp.trait), (40, 40)),(320 - (75*i),830))
+                if gamephase == 'shop':
+                    screen.blit(REROLL, (900, 750))
+                    screen.blit(font.render('R', False, (255, 255, 255)),(930,850))
+                    screen.blit(SELL, (750, 780))
+                    screen.blit(FREEZE, (830, 780))
+                    screen.blit(font.render('F', False, (255, 255, 255)),(810,850))
+                    for i in range(4):
+                        if player.shop[i] != None:
+                            temp = findanimaltoshow(player.shop[i].name)
+                            if player.shop[i].frozen:
+                                pygame.draw.rect(screen, (4, 134, 177), pygame.Rect(1600-(100*(i+1)),750, 100, 100))
+                            if temp != None:
+                                screen.blit(temp,(1600-(100*(i+1)),750))
+                                screen.blit(font.render(findkeytoshow(i), False, (255, 255, 255)),(1630-(100*(i+1)),850))
+                    for i in range(4,6):
+                        if player.shop[i] != None:
+                            temp = findfoodtoshow(player.shop[i].name)
+                            if player.shop[i].frozen:
+                                pygame.draw.rect(screen, (4, 134, 177), pygame.Rect(1600-(100*(i+1)),750, 100, 100))
+                            if temp != None:
+                                screen.blit(temp,(1600-(100*(i+1)),750))
+                                screen.blit(font.render(findkeytoshow(i), False, (255, 255, 255)),(1630-(100*(i+1)),850))
+                elif gamephase == 'battle' and enemy != None:
+                    for i in range(5):
+                        if enemy.warband[i] != None:
+                            temp = enemy.warband[i]
+                            if temp != None:
+                                screen.blit(findanimaltoshow(temp.name),(1600-(300-(75*i)),600))
+                                screen.blit(font.render(f'{i+1}', False, (0, 0, 0)),(1600-(340 - (75*i)),560))
+                                screen.blit(smallfont.render(f'ATK {temp.power}', False, (255, 255, 255)),(1600-(300 - (75*i)),710))
+                                screen.blit(smallfont.render(f'DEF {temp.defence}', False, (255, 255, 255)),(1600-(300 - (75*i)),740))
+                                screen.blit(smallfont.render(f'LVL {temp.level}', False, (255, 255, 255)),(1600-(300 - (75*i)),770))
+                                screen.blit(smallfont.render(f'EXP {temp.xp}', False, (255, 255, 255)),(1600-(300 - (75*i)),800))
+                                trait = 'N/A'if temp.trait == None else ''
+                                screen.blit(smallfont.render(f'T {trait}', False, (255, 255, 255)),(1600-(300 - (75*i)),830))
+                                if trait == '':
+                                    screen.blit(pygame.transform.scale(findfoodtoshow(temp.trait), (40, 40)),(1600-(320 - (75*i)),830))
             pygame.display.flip()
         pygame.quit()
     def playArena():
@@ -563,4 +640,3 @@ def main():
     loginWindow.mainloop()
 if __name__ == '__main__':
     main()
-#silly change

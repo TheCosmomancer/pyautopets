@@ -95,7 +95,7 @@ class Pet():
         return warband
     def attack(self,selfnum,warband,enemyband):
         def evaldamage(attacker,defender):
-            estimatedamage = attacker.attack
+            estimatedamage = attacker.power
             if attacker.trait == "Meat Bone":
                 estimatedamage += 3
             if defender.trait == "Garlic":
@@ -108,47 +108,48 @@ class Pet():
                 defender.trait = None
             if estimatedamage > 0:
                 defender.defence -= estimatedamage
-            attacker.defence -= defender.attack
+            attacker.defence -= defender.power
             return(attacker,defender)
         for target in range(5):
             if enemyband[target] != None:
                 break
         if target == 5 and enemyband[target] == None:
             return (warband,None)
-        attacks = [self.attack]
+        attacks = [self.power]
         for pet in warband:
-            if pet.name == 'Snake':
-                attacks.append(pet.level*5)
+            if pet != None:
+                if pet.name == 'Snake':
+                    attacks.append(pet.level*5)
         for i in range(len(attacks)):
             if i == 0:
                 if self.name == 'Boar':
-                    self.attack += 4*self.level
+                    self.power += 4*self.level
                     self.defence += 2*self.level
                 warband[selfnum],enemyband[target] = evaldamage(warband[selfnum],enemyband[target])
                 if self.name == 'Peacock':
-                    self.attack += 3*self.level
+                    self.power += 3*self.level
                 if enemyband[target].name == 'Peacock':
-                    enemyband[target].attack += 3*enemyband[target].level
+                    enemyband[target].power += 3*enemyband[target].level
                 if self.name == 'Camel':
                     for j in range(selfnum+1,5):
                         if warband[j] != None:
                             break
                     if warband[j] != None:
-                        warband[j].attack += self.level
+                        warband[j].power += self.level
                         warband[j].defence += 2*self.level
                 if enemyband[target].name == 'Camel':
                     for j in range(target+1,5):
                         if enemyband[j] != None:
                             break
                     if enemyband[j] != None:
-                        enemyband[j].attack += enemyband[target].level
+                        enemyband[j].power += enemyband[target].level
                         enemyband[j].defence += 2*enemyband[target].level
-                if self.tarit == 'Peanut':
+                if self.trait == 'Peanut':
                     enemyband[target].defence = 0
-                    self.tarit = None
-                if enemyband[target].tarit == 'Peanut':
+                    self.trait = None
+                if enemyband[target].trait == 'Peanut':
                     self.defence = 0
-                    enemyband[target].tarit = None
+                    enemyband[target].trait = None
                 if self.trait == 'Chili':
                     for j in range(target+1,5):
                         if enemyband[j] != None:
@@ -163,13 +164,13 @@ class Pet():
                         if estimatedamage > 0:
                             enemyband[j].defence -= estimatedamage
                         if enemyband[j].name == 'Peacock':
-                            enemyband[j].attack += 3*enemyband[j].level
+                            enemyband[j].power += 3*enemyband[j].level
                         if enemyband[j].name == 'Camel':
                             for k in range(j+1,5):
                                 if enemyband[k] != None:
                                     break
                             if enemyband[k] != None:
-                                enemyband[k].attack += enemyband[k].level
+                                enemyband[k].power += enemyband[k].level
                                 enemyband[k].defence += 2*enemyband[k].level
             else:
                 target = random.choice([x for x in range(5) if enemyband[x]!= None])
@@ -182,13 +183,13 @@ class Pet():
                 if estimatedamage > 0:
                     enemyband[target].defence -= estimatedamage
                 if enemyband[target].name == 'Peacock':
-                    enemyband[target].attack += 3*enemyband[target].level
+                    enemyband[target].power += 3*enemyband[target].level
                 if enemyband[target].name == 'Camel':
                     for j in range(target+1,5):
                         if enemyband[j] != None:
                             break
                     if enemyband[j] != None:
-                        enemyband[j].attack += self.level
+                        enemyband[j].power += self.level
                         enemyband[j].defence += 2*self.level
 
 class Food():
@@ -202,23 +203,22 @@ PETS = [
 #T1 pets
 Pet(name="Cricket",power=1,defence=3),#done
 Pet(name="Pig",power=4,defence=1),#done
-Pet(name="Duck",power=2,defence=3),
-Pet(name="Beaver",power=3,defence=2),
+Pet(name="Duck",power=2,defence=3),#done
+Pet(name="Beaver",power=3,defence=2),#done
 #T2 pets
-Pet(name="Crab",power=4,defence=1),
+Pet(name="Crab",power=4,defence=1),#done
 Pet(name="Peacock",power=2,defence=5),#done
 Pet(name="Flamingo",power=3,defence=2),#done
 Pet(name="Spider",power=2,defence=2),#done
 #T3 pets
 Pet(name="Sheep",power=2,defence=2),#done
-Pet(name="Dodo",power=3,defence=2),
-Pet(name="Ox",power=1,defence=3),
-#Pet(name="Giraffe",power=1,defence=2), #TODO swap out ox 4 girrafe
+Pet(name="Dodo",power=3,defence=2),#done
+Pet(name="Giraffe",power=1,defence=2),#done
 Pet(name="Camel",power=3,defence=4),#done
 #T4 pets
 Pet(name="Turtle",power=2,defence=5),#done
 Pet(name="Deer",power=4,defence=2),#done
-Pet(name="Parrot",power=4,defence=2),
+Pet(name="Parrot",power=4,defence=2),#done
 Pet(name="Skunk",power=3,defence=5),
 #T5 pets
 Pet(name="Armadillo",power=2,defence=10),

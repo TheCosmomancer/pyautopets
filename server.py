@@ -3,6 +3,7 @@ import socket
 import threading
 from classes import *
 import uuid
+import time
 def main():
     def clientHandel(conn,addr):
         print(f'{addr} connected')
@@ -13,17 +14,20 @@ def main():
                 break
             elif messege == 'getenemy':
                 while True:
+                    print('myplayer: ',myplayer.day)
                     allready = True
                     for player in LOBBIES[mylobby]:
+                        print(player.day)
                         if player.day != myplayer.day:
                             allready = False
                     if allready:
                         break
+                    time.sleep(3)
                 while True:
-                    enemy = random.choice(LOBBIES[mylobby])
-                    if enemy != myplayer:
+                    enemy = random.choice(range(len(LOBBIES[mylobby])))
+                    if enemy != myindex:
                         break
-                sendMessege(obj2str(enemy),conn)
+                sendMessege(obj2str(LOBBIES[mylobby][enemy]),conn)
             elif messege == 'newlobby':
                 while True:
                     newuuid = str(uuid.uuid4())
@@ -37,6 +41,7 @@ def main():
                 messege = messege.split('¶')
                 if messege[0] == 'saveplayer':
                     myplayer = str2obj(messege[1])
+                    LOBBIES[mylobby][myindex] = myplayer
                 elif messege[0] == 'connectlobby':
                     if messege[1] in LOBBIES.keys():
                         while True:
@@ -51,6 +56,7 @@ def main():
                         myplayer.uuid = playeruuid
                         mylobby = messege[1]
                         LOBBIES[mylobby].append(myplayer)
+                        myindex = len(LOBBIES[mylobby]) - 1
                         sendMessege('¶',conn)
                     else:
                         sendMessege('not found')

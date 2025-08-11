@@ -219,15 +219,15 @@ Pet(name="Camel",power=3,defence=4),#done
 Pet(name="Turtle",power=2,defence=5),#done
 Pet(name="Deer",power=4,defence=2),#done
 Pet(name="Parrot",power=4,defence=2),#done
-Pet(name="Skunk",power=3,defence=5),
+Pet(name="Skunk",power=3,defence=5),#done
 #T5 pets
-Pet(name="Armadillo",power=2,defence=10),
+Pet(name="Armadillo",power=2,defence=10),#done
 Pet(name="Rooster",power=6,defence=4),#done
 Pet(name="Shark",power=2,defence=2),#done
 Pet(name="Scorpion",power=1,defence=1,trait='Peanut'),#done
 #T6 pets
 Pet(name="Mammoth",power=4,defence=12),#done
-Pet(name="Dragon",power=3,defence=8),
+Pet(name="Dragon",power=3,defence=8),#done
 Pet(name="Boar",power=10,defence=6),#done
 Pet(name="Snake",power=8,defence=3)#done
 ]

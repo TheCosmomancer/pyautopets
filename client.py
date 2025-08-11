@@ -136,7 +136,10 @@ def main():
         Steak = pygame.image.load("./assets/Steak.png")
         Melon = pygame.image.load("./assets/Melon.png")
         Pizza = pygame.image.load("./assets/Pizza.png")
-        if name == 'Honey':
+        Peanut = pygame.image.load("./assets/Peanut.svg")
+        if name == 'Peanut':
+            return Peanut
+        elif name == 'Honey':
             return Honey
         elif name == 'Apple':
             return Apple
@@ -337,6 +340,14 @@ def main():
                         if inp[1] < 5:
                             player.warband[inp[0]],player.warband[inp[1]] = player.warband[inp[1]],player.warband[inp[0]]
                     elif inp[0] < 9 and player.coins > 2:
+                        if player.shop[inp[0]-5].name == "Cricket" or player.shop[inp[0]-5].name == "Pig" or player.shop[inp[0]-5].name == "Duck" or player.shop[inp[0]-5].name == "Beaver":
+                            for _ in range(5):
+                                if player.warband[_] != None:
+                                    if player.warband[_].name == 'Dragon':
+                                        for __ in range(5):
+                                            if player.warband[__] != None:
+                                                player.warband[__].power += player.warband[_].level
+                                                player.warband[__].defence += player.warband[_].level
                         if player.warband[inp[1]] == None:
                             player.warband[inp[1]] = player.shop[inp[0]-5]
                             temp = getpet(player.day)
@@ -463,6 +474,19 @@ def main():
                                 if playercopy.warband[j] != None:
                                     playercopy.warband[i].name += playercopy.warband[j].name
                                     break
+                        elif playercopy.warband[i].name == 'Armadillo':
+                            for j in range(5):
+                                if playercopy.warband[j] != None:
+                                    playercopy.warband[j].defence += 8*playercopy.warband[i].level
+                                if enemy.warband[j] != None:
+                                    enemy.warband[j].defence += 8*playercopy.warband[i].level
+                        elif playercopy.warband[i].name == 'Skunk':
+                            max = [-99 , -1]
+                            for j in range(5):
+                                if enemy.warband[j] != None:
+                                    if enemy.warband[j].defence > max[0]:
+                                        max = [enemy.warband[j].defence,j]
+                            enemy.warband[max[1]].defence -= (enemy.warband[max[1]].defence * (33*playercopy.warband[i].level)) // 100
             elif gamephase == 'battle':
                 if doiattack:
                     attacker = None
@@ -588,55 +612,38 @@ def main():
         player = Player(warband = [None,None,None,None,None],shop = [None,None,None,None,None,None],day = 1,coins = 0,lives = 4,wins = 0)
         loginWindow.destroy()
         playpygame("arena",player)
-    def newVSB():
+    def playVS():
         def newVS():
-            client.connect(ADDR)
-            signupattempt = sendMessege(f'newlobby¶{newuuid}')
-            if signupattempt != '¶':
-                loginWindow.destroy()
-                player = Player(warband = [None,None,None,None,None],shop = [None,None,None,None,None,None],day = 1,coins = 0,lives = 4,wins = 0)
-                player.ready = False
-                playpygame("vs",player)
-            else :
-                tk.Label(loginWindow,text="Failed").pack()
-        arenamodebutton.destroy()
-        vsnewbutton.destroy()
-        vsconnectbutton.destroy()
-        uuidlabel = tk.Label(loginWindow,text="UUID:")
-        uuidlabel.pack()
-        newuuid = str(uuid.uuid4())
-        uuidinput = tk.Entry(loginWindow)
-        uuidinput.pack()
-        uuidinput.insert(0, newuuid)
-        signupbotton = tk.Button(loginWindow,text="Connect to lobby",command=newVS)
-        signupbotton.pack()
-    def connectVSB():
+            sendMessege('newlobby')
+            lobbyuuid = reciveMessege()
+            uuidinput.delete(0, tk.END)
+            uuidinput.insert(0, lobbyuuid)
         def connectVS():
-            client.connect(ADDR)
-            signupattempt = sendMessege(f'connectlobby¶{uuidinput.get()}')
-            if signupattempt != '¶':
+            sendMessege(f'connectlobby¶{uuidinput.get()}')
+            signupattempt = reciveMessege()
+            if signupattempt == '¶':
                 loginWindow.destroy()
                 player = Player(warband = [None,None,None,None,None],shop = [None,None,None,None,None,None],day = 1,coins = 10,lives = 4,wins = 0)
                 player.ready = False
                 playpygame("vs",player)
             else :
                 tk.Label(loginWindow,text="Failed").pack()
+        client.connect(ADDR)
         arenamodebutton.destroy()
-        vsnewbutton.destroy()
-        vsconnectbutton.destroy()
+        vsbutton.destroy()
         uuidlabel = tk.Label(loginWindow,text="UUID:")
         uuidlabel.pack()
         uuidinput = tk.Entry(loginWindow)
         uuidinput.pack()
+        signupbotton = tk.Button(loginWindow,text="create lobby",command=newVS)
+        signupbotton.pack()
         signupbotton = tk.Button(loginWindow,text="Connect to lobby",command=connectVS)
         signupbotton.pack()
     loginWindow = tk.Tk()
     arenamodebutton = tk.Button(loginWindow,text="Play arena mode",command=playArena)
     arenamodebutton.pack()
-    vsnewbutton = tk.Button(loginWindow,text="create VS mode lobby",command=newVSB)
-    vsnewbutton.pack()
-    vsconnectbutton = tk.Button(loginWindow,text="connect to VS mode lobby",command=connectVSB)
-    vsconnectbutton.pack()
+    vsbutton = tk.Button(loginWindow,text="connect / create VS mode lobby",command=playVS)
+    vsbutton.pack()
     loginWindow.mainloop()
 if __name__ == '__main__':
     main()

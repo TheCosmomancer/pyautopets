@@ -225,6 +225,15 @@ def main():
                     screen.blit(SELL, (750, 780))
                     screen.blit(FREEZE, (830, 780))
                     screen.blit(font.render('F', False, (255, 255, 255)),(810,850))
+                    for i in range(6):
+                        if player.shop[i] != None:
+                            if player.shop[i].frozen:
+                                pygame.draw.rect(screen, (4, 134, 177), pygame.Rect(1600-(100*(i+1)),750, 100, 100))
+                    if inp[0] != None:
+                        if inp[0] < 5:
+                            pygame.draw.rect(screen, ( 230, 201, 32), pygame.Rect(300-(75*inp[0]),600, 100, 100))
+                        elif inp[0] < 11:
+                            pygame.draw.rect(screen, ( 230, 201, 32), pygame.Rect(1600-(100*(inp[0]-4)),750, 100, 100))
                     for i in range(5):
                         if player.warband[i] != None:
                             temp = player.warband[i]
@@ -242,16 +251,12 @@ def main():
                     for i in range(4):
                         if player.shop[i] != None:
                             temp = findanimaltoshow(player.shop[i].name)
-                            if player.shop[i].frozen:
-                                pygame.draw.rect(screen, (4, 134, 177), pygame.Rect(1600-(100*(i+1)),750, 100, 100))
                             if temp != None:
                                 screen.blit(temp,(1600-(100*(i+1)),750))
                                 screen.blit(font.render(findkeytoshow(i), False, (255, 255, 255)),(1630-(100*(i+1)),850))
                     for i in range(4,6):
                         if player.shop[i] != None:
                             temp = findfoodtoshow(player.shop[i].name)
-                            if player.shop[i].frozen:
-                                pygame.draw.rect(screen, (4, 134, 177), pygame.Rect(1600-(100*(i+1)),750, 100, 100))
                             if temp != None:
                                 screen.blit(temp,(1600-(100*(i+1)),750))
                                 screen.blit(font.render(findkeytoshow(i), False, (255, 255, 255)),(1630-(100*(i+1)),850))

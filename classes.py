@@ -88,9 +88,8 @@ class Pet():
             for i in range(len(warband)):
                 if warband[i] == None:
                     warband[i] = place[j]
-                    place.pop(j)
                     break
-            if i == 5:
+            if i <= 4:
                 break
         return warband
     def attack(self,selfnum,warband,enemyband):
@@ -113,7 +112,7 @@ class Pet():
         for target in range(5):
             if enemyband[target] != None:
                 break
-        if target == 5 and enemyband[target] == None:
+        if target == 4 and enemyband[target] == None:
             return (warband,None)
         attacks = [self.power]
         for pet in warband:
@@ -170,8 +169,8 @@ class Pet():
                                 if enemyband[k] != None:
                                     break
                             if enemyband[k] != None:
-                                enemyband[k].power += enemyband[k].level
-                                enemyband[k].defence += 2*enemyband[k].level
+                                enemyband[k].power += enemyband[j].level
+                                enemyband[k].defence += 2*enemyband[j].level
             else:
                 target = random.choice([x for x in range(5) if enemyband[x]!= None])
                 estimatedamage = attacks[i]
@@ -189,8 +188,8 @@ class Pet():
                         if enemyband[j] != None:
                             break
                     if enemyband[j] != None:
-                        enemyband[j].power += self.level
-                        enemyband[j].defence += 2*self.level
+                        enemyband[j].power += enemyband[target].level
+                        enemyband[j].defence += 2*enemyband[target].level
 
 class Food():
     def __init__(self,name,frozen=False):
@@ -241,24 +240,24 @@ def getpet(day):
     return random.choice(choices)
 #T1 foods
 FOODS = [
-Food(name="Honey"),
-Food(name="Apple"),
+Food(name="Honey"),#done
+Food(name="Apple"),#done
 #T2 foods
-Food(name="Sleeping Pill"),
+Food(name="Sleeping Pill"),#done
 Food(name="Meat Bone"),#done
 #T3 foods
 Food(name="Garlic"),#done
-Food(name="Salad"),
+Food(name="Salad"),#done
 #T4 foods
-Food(name="Pear"),
-Food(name="Chili"),#TODO
+Food(name="Pear"),#done
+Food(name="Chili"),#done
 #T5 foods
-Food(name="Chocolate"),
-Food(name="Sushi"),
+Food(name="Chocolate"),#done
+Food(name="Sushi"),#done
 #T6 foods
 Food(name="Steak"),#done
 Food(name="Melon"),#done
-Food(name="Pizza")
+Food(name="Pizza")#done
 ]
 def getfood(day):
     num  = (1 + (day-1)//2)*2

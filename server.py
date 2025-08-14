@@ -3,7 +3,6 @@ import socket
 import threading
 from classes import *
 import uuid
-import time
 def main():
     def clientHandel(conn,addr):
         print(f'{addr} connected')
@@ -14,15 +13,12 @@ def main():
                 break
             elif messege == 'getenemy':
                 while True:
-                    print('myplayer: ',myplayer.day)
                     allready = True
                     for player in LOBBIES[mylobby]:
-                        print(player.day)
                         if player.day != myplayer.day:
                             allready = False
                     if allready:
                         break
-                    time.sleep(3)
                 while True:
                     enemy = random.choice(range(len(LOBBIES[mylobby])))
                     if enemy != myindex:

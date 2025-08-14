@@ -29,7 +29,35 @@ def main():
                 messege_len = int(messege_len)
                 messege = client.recv(messege_len).decode(FORMAT)
                 return messege
-    def findanimaltoshow(name):
+    def findkeytoshow (n):
+        if n == 0:
+            return 'Q'
+        elif n == 1:
+            return 'W'
+        elif n == 2:
+            return 'E'
+        elif n == 3:
+            return 'A'
+        elif n == 4:
+            return 'S'
+        elif n == 5:
+            return 'D'
+    def playpygame (mode,player):
+        pygame.init()
+        Honey = pygame.image.load("./assets/Honey.png")
+        Apple = pygame.image.load("./assets/Apple.png")
+        SleepingPill = pygame.image.load("./assets/Sleeping Pill.png")
+        MeatBone = pygame.image.load("./assets/Meat Bone.png")
+        Garlic = pygame.image.load("./assets/Garlic.png")
+        Salad = pygame.image.load("./assets/Salad.png")
+        Pear = pygame.image.load("./assets/Pear.png")
+        Chili = pygame.image.load("./assets/Chili.png")
+        Chocolate = pygame.image.load("./assets/Chocolate.png")
+        Sushi = pygame.image.load("./assets/Sushi.png")
+        Steak = pygame.image.load("./assets/Steak.png")
+        Melon = pygame.image.load("./assets/Melon.png")
+        Pizza = pygame.image.load("./assets/Pizza.png")
+        Peanut = pygame.image.load("./assets/Peanut.svg")
         Cricket = pygame.image.load("./assets/Cricket.png")
         Pig = pygame.image.load("./assets/Pig.png")
         Duck = pygame.image.load("./assets/Duck.png")
@@ -60,133 +88,102 @@ def main():
         Sheeplet = pygame.image.load("./assets/Sheeplet.png")
         Cricklet = pygame.image.load("./assets/Cricklet.png")
         Giraffe = pygame.image.load("./assets/Giraffe.png")
-        if name == 'Giraffe':
-            return Giraffe
-        elif name == 'Cricklet':
-            return Cricklet
-        elif name == 'Sheeplet':
-            return Sheeplet
-        elif name == 'Bee':
-            return Bee
-        elif name == 'Chicken':
-            return Chicken
-        elif name == 'Bus':
-            return Bus
-        elif name == 'Cricket':
-            return Cricket
-        elif name == 'Pig':
-            return Pig
-        elif name == 'Duck':
-            return Duck
-        elif name == 'Beaver':
-            return Beaver
-        elif name == 'Crab':
-            return Crab
-        elif name == 'Peacock':
-            return Peacock
-        elif name == 'Flamingo':
-            return Flamingo
-        elif name == 'Spider':
-            return Spider
-        elif name == 'Sheep':
-            return Sheep
-        elif name == 'Dodo':
-            return Dodo
-        elif name == 'Ox':
-            return Ox
-        elif name == 'Camel':
-            return Camel
-        elif name == 'Turtle':
-            return Turtle
-        elif name == 'Deer':
-            return Deer
-        elif name == 'Parrot':
-            return Parrot
-        elif name == 'Skunk':
-            return Skunk
-        elif name == 'Armadillo':
-            return Armadillo
-        elif name == 'Rooster':
-            return Rooster
-        elif name == 'Shark':
-            return Shark
-        elif name == 'Scorpion':
-            return Scorpion
-        elif name == 'Mammoth':
-            return Mammoth
-        elif name == 'Dragon':
-            return Dragon
-        elif name == 'Boar':
-            return Boar
-        elif name == 'Snake':
-            return Snake
-        else:
-            return None
-    def findfoodtoshow(name):
-        Honey = pygame.image.load("./assets/Honey.png")
-        Apple = pygame.image.load("./assets/Apple.png")
-        SleepingPill = pygame.image.load("./assets/Sleeping Pill.png")
-        MeatBone = pygame.image.load("./assets/Meat Bone.png")
-        Garlic = pygame.image.load("./assets/Garlic.png")
-        Salad = pygame.image.load("./assets/Salad.png")
-        Pear = pygame.image.load("./assets/Pear.png")
-        Chili = pygame.image.load("./assets/Chili.png")
-        Chocolate = pygame.image.load("./assets/Chocolate.png")
-        Sushi = pygame.image.load("./assets/Sushi.png")
-        Steak = pygame.image.load("./assets/Steak.png")
-        Melon = pygame.image.load("./assets/Melon.png")
-        Pizza = pygame.image.load("./assets/Pizza.png")
-        Peanut = pygame.image.load("./assets/Peanut.svg")
-        if name == 'Peanut':
-            return Peanut
-        elif name == 'Honey':
-            return Honey
-        elif name == 'Apple':
-            return Apple
-        elif name == 'Sleeping Pill':
-            return SleepingPill
-        elif name == 'Meat Bone':
-            return MeatBone
-        elif name == 'Garlic':
-            return Garlic
-        elif name == 'Salad':
-            return Salad
-        elif name == 'Pear':
-            return Pear
-        elif name == 'Chili':
-            return Chili
-        elif name == 'Chocolate':
-            return Chocolate
-        elif name == 'Sushi':
-            return Sushi
-        elif name == 'Steak':
-            return Steak
-        elif name == 'Melon':
-            return Melon
-        elif name == 'Pizza':
-            return Pizza
-        else:
-            return None
-        #TODO add peanut
-    def findkeytoshow (n):
-        if n == 0:
-            return 'Q'
-        elif n == 1:
-            return 'W'
-        elif n == 2:
-            return 'E'
-        elif n == 3:
-            return 'A'
-        elif n == 4:
-            return 'S'
-        elif n == 5:
-            return 'D'
-    def playpygame (mode,player):
-        pygame.init()
-        screen = pygame.display.set_mode((1600, 900))
-        running = True
-        held = False
-        gamephase = 'newday'
+        def findanimaltoshow(name):
+            if name == 'Giraffe':
+                return Giraffe
+            elif name == 'Cricklet':
+                return Cricklet
+            elif name == 'Sheeplet':
+                return Sheeplet
+            elif name == 'Bee':
+                return Bee
+            elif name == 'Chicken':
+                return Chicken
+            elif name == 'Bus':
+                return Bus
+            elif name == 'Cricket':
+                return Cricket
+            elif name == 'Pig':
+                return Pig
+            elif name == 'Duck':
+                return Duck
+            elif name == 'Beaver':
+                return Beaver
+            elif name == 'Crab':
+                return Crab
+            elif name == 'Peacock':
+                return Peacock
+            elif name == 'Flamingo':
+                return Flamingo
+            elif name == 'Spider':
+                return Spider
+            elif name == 'Sheep':
+                return Sheep
+            elif name == 'Dodo':
+                return Dodo
+            elif name == 'Ox':
+                return Ox
+            elif name == 'Camel':
+                return Camel
+            elif name == 'Turtle':
+                return Turtle
+            elif name == 'Deer':
+                return Deer
+            elif name == 'Parrot':
+                return Parrot
+            elif name == 'Skunk':
+                return Skunk
+            elif name == 'Armadillo':
+                return Armadillo
+            elif name == 'Rooster':
+                return Rooster
+            elif name == 'Shark':
+                return Shark
+            elif name == 'Scorpion':
+                return Scorpion
+            elif name == 'Mammoth':
+                return Mammoth
+            elif name == 'Dragon':
+                return Dragon
+            elif name == 'Boar':
+                return Boar
+            elif name == 'Snake':
+                return Snake
+            else:
+                return None
+        def findfoodtoshow(name):
+            if name == 'Peanut':
+                return Peanut
+            elif name == 'Honey':
+                return Honey
+            elif name == 'Apple':
+                return Apple
+            elif name == 'Sleeping Pill':
+                return SleepingPill
+            elif name == 'Meat Bone':
+                return MeatBone
+            elif name == 'Garlic':
+                return Garlic
+            elif name == 'Salad':
+                return Salad
+            elif name == 'Pear':
+                return Pear
+            elif name == 'Chili':
+                return Chili
+            elif name == 'Chocolate':
+                return Chocolate
+            elif name == 'Sushi':
+                return Sushi
+            elif name == 'Steak':
+                return Steak
+            elif name == 'Melon':
+                return Melon
+            elif name == 'Pizza':
+                return Pizza
+            elif name == 'Peanut':
+                return Peanut
+            else:
+                return None
         wallpaper = pygame.transform.scale(pygame.image.load("./assets/wallhaven-jxrrmp_3840x2160.png"), (1600, 900))
         COIN = pygame.transform.scale(pygame.image.load("./assets/coin.svg"), (100, 100))
         LIVES = pygame.transform.scale(pygame.image.load("./assets/Lives.png"), (100, 100))
@@ -198,6 +195,10 @@ def main():
         smallfont = pygame.font.SysFont('Arial', 20)
         font = pygame.font.SysFont('Arial', 36)
         bigfont = pygame.font.SysFont('Arial', 72)
+        screen = pygame.display.set_mode((1600, 900))
+        running = True
+        held = False
+        gamephase = 'newday'
         COIN_COUNT = bigfont.render(f'{player.coins}', False, (0, 0, 0))
         outcome = None
         inp = [None,None]
@@ -219,10 +220,6 @@ def main():
                 screen.blit(NEXT, (1450, 450))
                 screen.blit(font.render('Space/Enter', False, (255, 255, 255)),(1400,550))
                 if gamephase == 'shop':
-                    try:
-                        screen.blit(bigfont.render(str(inp[0]), False, (255, 255, 255)),(0,0))
-                    except:
-                        pass
                     screen.blit(REROLL, (900, 750))
                     screen.blit(font.render('R', False, (255, 255, 255)),(930,850))
                     screen.blit(SELL, (750, 780))
@@ -316,7 +313,7 @@ def main():
                             if tostatup != []:
                                 for _ in tostatup:
                                     player.warband[_].power += 1
-                                    player.warband[_].defecne += 1
+                                    player.warband[_].defence += 1
                 gamephase = 'shop'
             elif gamephase == 'shop':
                 if inp[1] == None:
@@ -411,7 +408,7 @@ def main():
                                 if player.warband[inp[0]].name == 'Duck':
                                     for h in range(4):
                                         player.shop[h].defence += player.warband[inp[0]].level
-                                elif player.warband[inp[0]] == 'Beaver':
+                                elif player.warband[inp[0]].name == 'Beaver':
                                     tostatup = []
                                     for h in range(5):
                                         if player.warband[h] != None and h != inp[0]:

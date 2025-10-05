@@ -1,6 +1,6 @@
 # Super Auto Pets Clone
 
-A Python-based implementation of a Super Auto Pets-style auto-battler game with local and networked multiplayer modes.
+A Python-based implementation of a Super Auto Pets-style auto-battler game with local and networked multiplayer modes. Written for Advanved programming final class project.
 
 ## Features
 
